@@ -6,7 +6,10 @@ import java.util.Random;
 import javax.swing.*;
 
 //This class will inherit from JPanel class
-public class FlappyBird extends JPanel implements ActionListener{
+//Will implement two interfaces ActionListener and KeyListener
+//ActionListener - receives actions
+//KeyListener - receives keystroke/presses;
+public class FlappyBird extends JPanel implements ActionListener, KeyListener{
     // Instance variables belonging to the class but not any method.
     int boardWidth = 360;
     int boardHeight = 640;
@@ -34,9 +37,30 @@ public class FlappyBird extends JPanel implements ActionListener{
         }
     }
 
+    //Pipes Logic
+    int pipeX = boardWidth;
+    int pipeY = 0;
+    int pipeWidth = 64;
+    int pipeHeight = 512;
+
+    class Pipe {
+        int x = pipeX;
+        int y = pipeY;
+        int width = pipeWidth;
+        int height = pipeHeight;
+        Image img;
+        //checks whether flappybird passed the pipe (used for scoring)
+        boolean passed = false;
+
+        Pipe(Image img){
+            this.img = img;
+        }
+    }
+
     //game logic 
     Bird bird;
-    int velocityY = -6;
+    int velocityY = 0;
+    int gravity = 1;
 
     //variable for game loop;
     Timer gameLoop;
@@ -47,6 +71,10 @@ public class FlappyBird extends JPanel implements ActionListener{
         // uses in-line instantiation to create an object of dimension class.
         setPreferredSize(new Dimension(boardWidth, boardHeight));
         setBackground(Color.blue);
+        //makes flappybird class the jpanel the one taking in key events
+        setFocusable(true);
+        //makes sures that it checks the three functions for keys
+        addKeyListener(this);
 
         // loading images
         backgroundImg = new ImageIcon(getClass().getResource("/Images/flappybirdbg.png")).getImage();
@@ -81,11 +109,13 @@ public class FlappyBird extends JPanel implements ActionListener{
     // handles all the movement logic
     public void move(){
         //bird
+        velocityY += gravity;
         bird.y += velocityY;
         bird.y = Math.max(bird.y, 0);
 
-    }
+        bird.y = Math.min(bird.y,575-bird.height);
 
+    }
 
 
     @Override
@@ -93,6 +123,27 @@ public class FlappyBird extends JPanel implements ActionListener{
         move();
         repaint();
 
+    }
+
+
+    //is any key a character key, arrow keys, ie all keys
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if(e.getKeyCode() == KeyEvent.VK_SPACE){
+            velocityY = -9;
+        }
+    }
+
+
+    //when you type on key with character ie 'A'. f9 or esc for example would not work.
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }   
+
+
+    // when you press on a key and let go and the key goes back up
+    @Override
+    public void keyReleased(KeyEvent e) {
     }
 
 }

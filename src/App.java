@@ -18,10 +18,13 @@ public class App {
         Image topPipeImage;
         Image bottomPipeImage;
 
-
         FlappyBird flappyBird = new FlappyBird();
         frame.add(flappyBird);
         frame.pack();
+        //although the object already has focus it may be possible that the window is not focused initially thus no keys
+        //being received requestFocusInWindow ensures the opened window of the game is the focus and the jPanel flappybird is the priority
+        flappyBird.requestFocusInWindow();
+        //hides the window is false shows the window ie game screen if true
         frame.setVisible(true);
     }
 }
