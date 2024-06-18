@@ -153,6 +153,18 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener{
             Pipe pipe = pipes.get(i);
             g.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height,null);
         }
+
+
+        //score 
+        g.setColor(Color.white);
+        g.setFont(new Font("Comic Sans",Font.PLAIN,32));
+        if (gameOver){
+            g.drawString("Game Over " + String.valueOf((int)score), 10,35);
+        }
+        else{
+            g.drawString(String.valueOf((int)score),10,35);
+        }
+
     }
     // handles all the movement logic
     public void move(){
@@ -171,6 +183,8 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener{
             // as such when adding width it gives us to the end x position or rightmost side of the object. 
             if(!pipe.passed && bird.x > pipe.x + pipe.width){
                 pipe.passed = true;
+                //0.5 because bird technically passes through 2 pipes top and bottom
+                score += 0.5;
             }
 
             // if bird collides with pipe object end game
@@ -212,6 +226,16 @@ public class FlappyBird extends JPanel implements ActionListener, KeyListener{
     public void keyPressed(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_SPACE){
             velocityY = -9;
+            if (gameOver){
+                //restart can be done by checking if status gameover is false then resetting the conditions. 
+                bird.y = birdY;
+                velocityY = 0;
+                pipes.clear();
+                score = 0;
+                gameOver = false;
+                gameLoop.start();
+                placePipesTimer.start();
+            }
         }
     }
 
